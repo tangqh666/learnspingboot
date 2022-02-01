@@ -54,22 +54,47 @@
       </a-sub-menu>
     </a-menu>
   </a-layout-sider>
+
+    <a-layout-content>
+ <pre>
+    {{JobJdbcDatasources}}
+   {{sources}}
+ </pre>
+
+    </a-layout-content>
+
   </a-layout>
+
+
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent,onMounted,ref,reactive,toRef } from 'vue';
 import axios from 'axios'
 
 
 
 export default defineComponent({
   name: 'Home',
-  setup(){
+  setup() {
     console.log("setup");
-  axios.get("http://localhost:8088/job").then((response) =>{
-    console.log(response);
-  })
-   }
+    const JobJdbcDatasources=ref();
+    const JobJdbcDatasources1=reactive({sources:[]});
+    onMounted(() =>{
+      console.log("onmounted");
+      axios.get("http://localhost:8088/job").then((response) =>{
+        const  data=response.data;
+        JobJdbcDatasources.value=data.content;
+        JobJdbcDatasources1.sources=data.content;
+        console.log(response);
+      });
+    })
+ return{
+   JobJdbcDatasources,
+   sources:toRef(JobJdbcDatasources1,"sources")
+
+ }
+  }
+
 });
 </script>
